@@ -6,6 +6,8 @@ View the visualization site: [visualization site](https://grant-atl.github.io/Da
 
 View the ReadMe site: [ReadMe](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/)
 
+View the data files (only shared with instructors): [data files](https://drive.google.com/drive/folders/1xueU8NaxeS7-TmZuOAgvSEQn19CEWIbD?usp=sharing)
+
 ## Project overview
 
 This project visualizes a descriptive survey about breast and liver cancer warning signs among respondents in Ho Chi Minh City. I wanted to explore how self-reported warning signs vary by district, age group, symptom type, selected lifestyle measures, and health-context variables.

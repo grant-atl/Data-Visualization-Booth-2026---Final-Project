@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cancer warning signs across Ho Chi Minh City</title>
+    <meta
+      name="description"
+      content="A look at how 170 survey respondents in Ho Chi Minh City reported breast and liver cancer warning signs."
+    />
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/maplibre-gl@5.9.0/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <!-- HERO -->
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">A Ho Chi Minh City cancer-awareness survey</p>
+          <h1 id="page-title">
+            3 in 4 respondents reported a breast or liver cancer warning sign.
+          </h1>
+          <p class="dek">
+            Among 170 self-reported responses across 19 Ho Chi Minh City
+            districts, most respondents reported at least one warning sign &mdash;
+            and the majority of those reported breast and liver signs together.
+            The analysis is descriptive. Reported warning signs are not to be
+            interpreted as cancer diagnoses, and the visualizations should not
+            be read as causal evidence.
+          </p>
+          <div class="hero-stats" aria-label="Survey summary at a glance">
+            <div>
+              <strong id="stat-n">170</strong>
+              <span>survey responses</span>
+            </div>
+            <div>
+              <strong id="stat-symptoms">75%</strong>
+              <span>reported any warning sign</span>
+            </div>
+            <div>
+              <strong id="stat-both">59%</strong>
+              <span>reported both breast &amp; liver signs</span>
+            </div>
+            <div>
+              <strong id="stat-districts">19</strong>
+              <span>districts represented</span>
+            </div>
+          </div>
+          <p class="hero-meta">
+            Created for BUS 32130 Data Visualization at the University of Chicago Booth School of Business
+          </p>
+        </div>
+      </section>
+
+      <!-- FINDING 01: dot grid -->
+      <section class="claim-section" aria-labelledby="symptom-title">
+        <div class="claim-copy">
+          <p class="eyebrow">Finding 01 &middot; The headline</p>
+          <h2 id="symptom-title">
+            127 of 170 respondents reported at least one warning sign.
+          </h2>
+          <p>
+            Each dot is one survey response, sorted into four reporting
+            patterns. The largest band &mdash; 100 of 170 &mdash; reported
+            both breast and liver signs together, not a single isolated
+            symptom.
+          </p>
+          <ul class="dot-legend" aria-label="Dot grid legend">
+            <li>
+              <span class="swatch swatch-both"></span>
+              <span class="label">Reported both breast &amp; liver signs</span>
+              <strong id="legend-both">100</strong>
+            </li>
+            <li>
+              <span class="swatch swatch-liver"></span>
+              <span class="label">Reported liver signs only</span>
+              <strong id="legend-liver">25</strong>
+            </li>
+            <li>
+              <span class="swatch swatch-breast"></span>
+              <span class="label">Reported breast signs only</span>
+              <strong id="legend-breast">2</strong>
+            </li>
+            <li>
+              <span class="swatch swatch-none"></span>
+              <span class="label">Reported no warning signs</span>
+              <strong id="legend-none">43</strong>
+            </li>
+          </ul>
+        </div>
+        <figure class="chart-wrap">
+          <svg id="symptom-rate-chart" role="img" aria-labelledby="symptom-chart-title"></svg>
+          <figcaption id="symptom-chart-title">
+            Sample: 170 survey responses.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- FINDING 02: chord diagram -->
+      <section class="claim-section alternate" aria-labelledby="chord-title">
+        <div class="claim-copy">
+          <p class="eyebrow">Finding 02 &middot; The clusters</p>
+          <h2 id="chord-title">
+            Fatigue is reported alongside almost every other warning sign.
+          </h2>
+          <p>
+            Each arc on the circle is one of the 10 individual warning signs.
+            A ribbon between two arcs is the number of respondents who
+            reported both &mdash; the thicker the ribbon, the more often the
+            pair co-occurs. Breast signs sit on one side of the ring, liver
+            signs on the other. Fatigue and Upper Right Abdominal Pain reach
+            across to the breast side; the single thickest ribbon links Breast
+            Lump and Fatigue, reported together by 87 respondents.
+          </p>
+          <ul class="dot-legend chord-legend" aria-label="Chord diagram legend">
+            <li>
+              <span class="swatch swatch-breast"></span>
+              <span class="label">Breast warning signs</span>
+            </li>
+            <li>
+              <span class="swatch swatch-liver"></span>
+              <span class="label">Liver warning signs</span>
+            </li>
+          </ul>
+          <p class="interaction-hint">
+            Hover any arc to preview its ribbons; click to keep it selected.
+          </p>
+        </div>
+        <figure class="chart-wrap">
+          <svg id="symptom-chord" role="img" aria-labelledby="chord-chart-title"></svg>
+          <figcaption id="chord-chart-title">
+            Ribbon thickness is proportional to the number of respondents who
+            reported both signs.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- FINDING 03: map -->
+      <section class="map-story" aria-label="District map of warning signs and lifestyle measures">
+        <div class="section-intro">
+          <p class="eyebrow">Finding 03 &middot; The geography</p>
+          <h2>Reporting rates rise and fall sharply between districts.</h2>
+          <p class="lede">
+            Layer any warning sign against any lifestyle or support measure
+            and look for districts where the shading and the circle size shift
+            together. Hover a district for the underlying counts.
+          </p>
+        </div>
+
+        <div class="map-panel" aria-label="Ho Chi Minh City district map">
+          <div id="map"></div>
+          <div class="map-card">
+            <h3 id="map-title">Choose a warning sign and a lifestyle measure</h3>
+            <p id="map-note">
+              Shading encodes the selected warning sign rate. Circle size
+              encodes the selected lifestyle or support measure. Districts with
+              fewer than five respondents are faded.
+            </p>
+            <label class="map-control">
+              <span>Warning sign (shading)</span>
+              <select id="map-symptom-select"></select>
+            </label>
+            <label class="map-control">
+              <span>Lifestyle or support (circle size)</span>
+              <select id="map-lifestyle-select"></select>
+            </label>
+          </div>
+          <div id="map-tooltip" role="status" aria-live="polite"></div>
+        </div>
+        <p class="map-footnote">
+          Districts with fewer than five respondents are faded; in the smallest
+          districts a single response can swing the rate by tens of percentage
+          points.
+        </p>
+      </section>
+
+      <!-- FINDING 04: correlation matrix -->
+      <section class="claim-section" aria-labelledby="lifestyle-title">
+        <div class="claim-copy">
+          <p class="eyebrow">Finding 04 &middot; The patterns</p>
+          <h2 id="lifestyle-title">
+            Red meat and alcohol move with warning signs. BMI moves against them.
+          </h2>
+          <p>
+            Each cell is a Pearson correlation between one warning sign and
+            one lifestyle or support measure. Amber means the two move in
+            opposite directions; teal means they move up together. Pale cells
+            sit near zero, with no clear signal either way.
+            Vegetables, exercise, sleep, and social support sit near zero
+            overall. Jaundice is the exception across the row: its values
+            point the opposite direction from every other warning sign.
+          </p>
+          <ul class="correlation-legend" aria-label="Correlation color scale">
+            <li>
+              <span class="corr-swatch corr-negative"></span>
+              <span>Moves against</span>
+            </li>
+            <li>
+              <span class="corr-swatch corr-neutral"></span>
+              <span>Near zero</span>
+            </li>
+            <li>
+              <span class="corr-swatch corr-positive"></span>
+              <span>Moves together</span>
+            </li>
+          </ul>
+        </div>
+        <figure class="chart-wrap scrollable">
+          <svg id="lifestyle-matrix" role="img" aria-labelledby="lifestyle-chart-title"></svg>
+          <figcaption id="lifestyle-chart-title">
+            Pearson correlation, &minus;1 to +1.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- FINDING 05: sankey age -> reporting category -->
+      <section class="wide-story" aria-labelledby="age-title">
+        <div class="section-intro">
+          <p class="eyebrow">Finding 05 &middot; The demographics</p>
+          <h2 id="age-title">
+            Every respondent 60 or older reported a warning sign.
+          </h2>
+          <p class="lede">
+            Each strand follows respondents from their age bracket on the left
+            to their reporting pattern on the right. Strand thickness equals
+            respondent count. In the 60+ group, 18 of 19 reported both breast
+            and liver signs together. The 30&ndash;39 bracket is the opposite
+            extreme: 40% of that group reported no warning signs at all. Hover
+            any strand for the exact count.
+          </p>
+        </div>
+        <figure class="chart-wrap sankey-wrap">
+          <svg id="age-sankey" role="img" aria-labelledby="age-chart-title"></svg>
+          <figcaption id="age-chart-title">
+            One strand per age &times; reporting-pattern combination, sized by
+            respondent count.
+          </figcaption>
+        </figure>
+        <div id="sankey-tooltip" role="status" aria-live="polite"></div>
+      </section>
+
+      <!-- CLOSING -->
+      <section class="closing">
+        <h2>What this story is &mdash; and is not.</h2>
+        <p>
+          This story is based on 170 self-reported survey responses from Ho
+          Chi Minh City. Reported warning signs are not cancer diagnoses.
+          District rates and lifestyle correlations describe this sample only;
+          they do not prove cause or represent the city as a whole.
+        </p>
+        <p>
+          Created by Grant Pedersen for BUS 32130 Data Visualization at the
+          University of Chicago Booth School of Business.
+        </p>
+        <p class="source">
+          Sources: survey responses and Ho Chi Minh City district boundaries.
+          Basemap by
+          <a href="https://openfreemap.org/quick_start/">OpenFreeMap</a> via
+          MapLibre GL JS. Charts rendered with D3.
+        </p>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5.9.0/dist/maplibre-gl.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+.DS_Store
+Ho Chi Minh Geographic Data/
+Survey/
+Tableau/
+*.twbx
+.*
+!.gitignore
+!.gitattributes
+!.github/
+!.env.example

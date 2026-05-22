@@ -1,6 +1,6 @@
 # Ho Chi Minh City Cancer Symptom and Cancer Literacy Research
 
-View on the class site: [raw data and Tableau file](https://us-east-1.online.tableau.com/#/site/boothdataviz/workbooks/4725631?:origin=card_share_link)
+View on the class site: [raw data and Tableau file](https://us-east-1.online.tableau.com/#/site/boothdataviz/workbooks/4725631?:origin=card_share_link) *(Begin by clicking Story 1)*
 
 ## Project overview
 

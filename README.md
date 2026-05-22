@@ -2,6 +2,10 @@
 
 View on the class site: [raw data and Tableau file](https://us-east-1.online.tableau.com/#/site/boothdataviz/workbooks/4725631?:origin=card_share_link) *(Begin by clicking Story 1)*
 
+View the visualization site: [visualization site](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/visualization-site/)
+
+View the ReadMe site: [ReadMe](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/)
+
 ## Project overview
 
 This project visualizes a descriptive survey about breast and liver cancer warning signs among respondents in Ho Chi Minh City. I wanted to explore how self-reported warning signs vary by district, age group, symptom type, selected lifestyle measures, and health-context variables.

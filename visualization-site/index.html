@@ -17,9 +17,20 @@
 </head>
 
 <body>
+  <nav class="story-nav" aria-label="Jump to a finding">
+    <ol>
+      <li><a href="#hero" data-target="hero">Intro</a></li>
+      <li><a href="#finding-domain" data-target="finding-domain"><span class="nav-num">01</span> Reporting patterns</a></li>
+      <li><a href="#finding-chord" data-target="finding-chord"><span class="nav-num">02</span> Co-occurrence</a></li>
+      <li><a href="#finding-map" data-target="finding-map"><span class="nav-num">03</span> District map</a></li>
+      <li><a href="#finding-lifestyle" data-target="finding-lifestyle"><span class="nav-num">04</span> Lifestyle</a></li>
+      <li><a href="#finding-age" data-target="finding-age"><span class="nav-num">05</span> Age brackets</a></li>
+    </ol>
+  </nav>
+
   <main>
     <!-- HERO -->
-    <section class="hero" aria-labelledby="page-title">
+    <section class="hero" id="hero" aria-labelledby="page-title">
       <div class="hero-copy">
         <p class="eyebrow">A Ho Chi Minh City cancer-awareness survey</p>
         <h1 id="page-title">
@@ -53,12 +64,43 @@
         </div>
         <p class="hero-meta">
           Created for BUS 32130 Data Visualization at the University of Chicago Booth School of Business
+          &nbsp;·&nbsp;
+          <a href="dashboard.html">View as summary dashboard →</a>
         </p>
       </div>
     </section>
 
+    <!-- ABOUT THIS SAMPLE -->
+    <aside class="about-sample" aria-label="About this sample">
+      <p>
+        <strong>About this sample.</strong>
+        170 self-reported responses across 19 Ho Chi Minh City districts.
+        Reported warning signs are not cancer diagnoses; the analysis is
+        descriptive, not causal or diagnostic.
+      </p>
+    </aside>
+
+    <!-- KEY FINDINGS STRIP -->
+    <section class="key-findings" aria-label="Key findings at a glance">
+      <article>
+        <p class="kf-num">01</p>
+        <h3>3 in 4 reported a warning sign.</h3>
+        <p>127 of 170 respondents reported at least one breast or liver cancer warning sign.</p>
+      </article>
+      <article>
+        <p class="kf-num">02</p>
+        <h3>Breast Lump and Fatigue is the strongest pair.</h3>
+        <p>87 respondents reported both &mdash; the thickest co-occurrence in the survey.</p>
+      </article>
+      <article>
+        <p class="kf-num">03</p>
+        <h3>Every respondent 60 or older reported a sign.</h3>
+        <p>19 of 19 in the 60+ bracket; 18 of those reported both breast and liver signs.</p>
+      </article>
+    </section>
+
     <!-- FINDING 01: dot grid -->
-    <section class="claim-section" aria-labelledby="symptom-title">
+    <section class="claim-section" id="finding-domain" aria-labelledby="symptom-title">
       <div class="claim-copy">
         <h2 id="symptom-title">
           127 of 170 respondents reported at least one warning sign.
@@ -101,7 +143,7 @@
     </section>
 
     <!-- FINDING 02: chord diagram -->
-    <section class="claim-section alternate" aria-labelledby="chord-title">
+    <section class="claim-section alternate" id="finding-chord" aria-labelledby="chord-title">
       <div class="claim-copy">
         <h2 id="chord-title">
           Fatigue is reported alongside almost every other warning sign.
@@ -139,7 +181,7 @@
     </section>
 
     <!-- FINDING 03: map -->
-    <section class="map-story" aria-label="District map of warning signs and lifestyle measures">
+    <section class="map-story" id="finding-map" aria-label="District map of warning signs and lifestyle measures">
       <div class="section-intro">
         <h2>Reporting rates rise and fall sharply between districts.</h2>
         <p class="lede">
@@ -177,7 +219,7 @@
     </section>
 
     <!-- FINDING 04: correlation matrix -->
-    <section class="claim-section" aria-labelledby="lifestyle-title">
+    <section class="claim-section" id="finding-lifestyle" aria-labelledby="lifestyle-title">
       <div class="claim-copy">
         <h2 id="lifestyle-title">
           Red meat and alcohol move with warning signs. BMI moves against them.
@@ -215,7 +257,7 @@
     </section>
 
     <!-- FINDING 05: sankey age -> reporting category -->
-    <section class="wide-story" aria-labelledby="age-title">
+    <section class="wide-story" id="finding-age" aria-labelledby="age-title">
       <div class="section-intro">
         <h2 id="age-title">
           Every respondent 60 or older reported a warning sign.
@@ -265,6 +307,50 @@
   <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
   <script src="https://unpkg.com/maplibre-gl@5.9.0/dist/maplibre-gl.js"></script>
   <script src="app.js"></script>
+  <script>
+    // Story-nav scrollspy: highlight the link whose section is closest to the
+    // top of the viewport. Uses IntersectionObserver with a top-biased root
+    // margin so the active link tracks the section the user is reading.
+    (function () {
+      const links = document.querySelectorAll(".story-nav a[data-target]");
+      if (!links.length) return;
+      const byId = new Map();
+      links.forEach((a) => byId.set(a.dataset.target, a));
+
+      const setActive = (id) => {
+        links.forEach((a) => a.classList.toggle("is-active", a.dataset.target === id));
+      };
+
+      const sections = Array.from(byId.keys())
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+      const visible = new Map();
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) visible.set(entry.target.id, entry.intersectionRatio);
+            else visible.delete(entry.target.id);
+          });
+          if (!visible.size) return;
+          let bestId = null;
+          let bestRatio = -1;
+          for (const [id, ratio] of visible.entries()) {
+            if (ratio > bestRatio) {
+              bestRatio = ratio;
+              bestId = id;
+            }
+          }
+          if (bestId) setActive(bestId);
+        },
+        { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+      );
+
+      sections.forEach((s) => observer.observe(s));
+      // Initial state — highlight hero on load.
+      setActive("hero");
+    })();
+  </script>
 </body>
 
 </html>

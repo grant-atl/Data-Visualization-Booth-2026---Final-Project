@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Summary dashboard — Ho Chi Minh City cancer warning signs</title>
+  <meta name="description"
+    content="Single-screen summary dashboard of breast and liver cancer warning signs across 170 survey respondents in Ho Chi Minh City." />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+
+<body class="dashboard-body">
+  <header class="db-header">
+    <div class="db-header-left">
+      <p class="db-eyebrow">Ho Chi Minh City cancer-awareness survey</p>
+      <h1 class="db-title">Summary dashboard</h1>
+    </div>
+    <div class="db-header-right">
+      <p class="db-context">
+        170 respondents · 19 districts · descriptive analysis only
+      </p>
+      <a class="db-link" href="index.html">View the scrollytelling story →</a>
+    </div>
+  </header>
+
+  <main class="db-grid">
+
+    <!-- ROW 1: 4 KPI tiles -->
+    <section class="db-kpi" aria-label="Headline statistics">
+      <div class="kpi-tile">
+        <p class="kpi-label">Survey responses</p>
+        <p class="kpi-value" id="kpi-n">170</p>
+        <p class="kpi-foot">Cleaned rows</p>
+      </div>
+      <div class="kpi-tile">
+        <p class="kpi-label">Reported any warning sign</p>
+        <p class="kpi-value" id="kpi-any">75%</p>
+        <p class="kpi-foot"><span id="kpi-any-n">127</span> of 170 respondents</p>
+      </div>
+      <div class="kpi-tile">
+        <p class="kpi-label">Reported breast &amp; liver signs</p>
+        <p class="kpi-value" id="kpi-both">59%</p>
+        <p class="kpi-foot"><span id="kpi-both-n">100</span> of 170 respondents</p>
+      </div>
+      <div class="kpi-tile">
+        <p class="kpi-label">Districts represented</p>
+        <p class="kpi-value" id="kpi-districts">19</p>
+        <p class="kpi-foot">of Ho Chi Minh City</p>
+      </div>
+    </section>
+
+    <!-- ROW 2: map, symptom domain, age -->
+    <section class="db-panel db-panel-map" aria-labelledby="panel-map-title">
+      <header class="panel-header">
+        <h2 id="panel-map-title">Any-warning-sign rate by district</h2>
+        <p class="panel-sub">Darker shading = higher reporting rate. Districts with fewer than five respondents are
+          hatched.</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-map" role="img" aria-label="District choropleth"></svg>
+      </figure>
+      <footer class="panel-footer">
+        <div class="legend-scale" aria-label="Color scale">
+          <span class="legend-scale-label">0%</span>
+          <span class="legend-scale-bar" id="db-map-scale"></span>
+          <span class="legend-scale-label">100%</span>
+        </div>
+      </footer>
+    </section>
+
+    <section class="db-panel db-panel-domain" aria-labelledby="panel-domain-title">
+      <header class="panel-header">
+        <h2 id="panel-domain-title">Symptom-domain profile</h2>
+        <p class="panel-sub">Each respondent falls into exactly one pattern.</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-domain" role="img" aria-label="Stacked bar of reporting patterns"></svg>
+      </figure>
+    </section>
+
+    <section class="db-panel db-panel-age" aria-labelledby="panel-age-title">
+      <header class="panel-header">
+        <h2 id="panel-age-title">Reporting rate by age bracket</h2>
+        <p class="panel-sub">Bar length = % reporting any sign. Tick marks above each bar show respondent count.</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-age" role="img" aria-label="Bar chart of any-symptom rate by age"></svg>
+      </figure>
+    </section>
+
+    <!-- ROW 3: top 5, bottom 5, sex, health-history -->
+    <section class="db-panel db-panel-rank" aria-labelledby="panel-top-title">
+      <header class="panel-header">
+        <h2 id="panel-top-title">Top 5 districts</h2>
+        <p class="panel-sub">Highest any-sign rate · n &ge; 5 respondents</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-top" role="img" aria-label="Top 5 districts ranked"></svg>
+      </figure>
+    </section>
+
+    <section class="db-panel db-panel-rank" aria-labelledby="panel-bottom-title">
+      <header class="panel-header">
+        <h2 id="panel-bottom-title">Bottom 5 districts</h2>
+        <p class="panel-sub">Lowest any-sign rate · n &ge; 5 respondents</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-bottom" role="img" aria-label="Bottom 5 districts ranked"></svg>
+      </figure>
+    </section>
+
+    <section class="db-panel db-panel-sex" aria-labelledby="panel-sex-title">
+      <header class="panel-header">
+        <h2 id="panel-sex-title">Reporting rate by sex</h2>
+        <p class="panel-sub">Equal sample sizes — 85 respondents each.</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-sex" role="img" aria-label="Reporting rate by sex"></svg>
+      </figure>
+    </section>
+
+    <section class="db-panel db-panel-history" aria-labelledby="panel-history-title">
+      <header class="panel-header">
+        <h2 id="panel-history-title">Health-history factors vs reporting</h2>
+        <p class="panel-sub">Factors count: current cancer, prior cancer, family history, chronic disease.</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-history" role="img" aria-label="Reporting rate by health-history factor count"></svg>
+      </figure>
+    </section>
+
+  </main>
+
+  <footer class="db-footer">
+    <p>
+      Created by Grant Pedersen for BUS 32130 Data Visualization · University of Chicago Booth School of Business.
+      Reported warning signs are self-reported and not cancer diagnoses; district rates describe this sample only.
+    </p>
+  </footer>
+
+  <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+
+</html>

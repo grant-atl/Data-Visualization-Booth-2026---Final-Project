@@ -4,6 +4,8 @@ View on the class site: [raw data and Tableau file](https://us-east-1.online.tab
 
 View the visualization site: [visualization site](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/visualization-site/)
 
+View the summary dashboard: [summary dashboard](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/visualization-site/dashboard.html)
+
 View the ReadMe site: [ReadMe](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/)
 
 View the data files (only shared with instructors): [data files](https://drive.google.com/drive/folders/1xueU8NaxeS7-TmZuOAgvSEQn19CEWIbD?usp=sharing)
@@ -339,7 +341,7 @@ This project answers three main research questions:
 The analysis is descriptive rather than diagnostic or causal. The goal is to communicate patterns from the research sample, not to estimate cancer prevalence in Ho Chi Minh City or prove that any lifestyle factor causes symptom reporting.
 
 ## LLM usage
-I used Codex during data preparation to help translate and clarify Vietnamese survey labels into English and rename fields into readable analysis-ready column names. 
+I used Codex during data preparation to help translate and clarify Vietnamese survey labels into English and rename fields into readable analysis-ready column names. I also used Codex to help me with the JS code for the interactive charts.
 
 ## Data validation and cleaning checks
 

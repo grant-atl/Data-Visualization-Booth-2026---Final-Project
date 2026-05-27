@@ -1,5 +1,5 @@
-const DATA_URL = "data/survey-fixed.csv";
-const GEO_URL = "data/hcmc-districts.geojson";
+const DATA_URL = "../data/survey-fixed.csv";
+const GEO_URL = "../data/hcmc-districts.geojson";
 
 const fmtInt = d3.format(",");
 const fmtPct = d3.format(".0%");

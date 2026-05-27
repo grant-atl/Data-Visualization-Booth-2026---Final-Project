@@ -4,7 +4,7 @@ View on the class site: [raw data and Tableau file](https://us-east-1.online.tab
 
 View the visualization site: [visualization site](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/visualization-site/)
 
-View the summary dashboard: [summary dashboard](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/visualization-site/dashboard.html)
+View the summary dashboard: [summary dashboard](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/visualization-site/dashboard/)
 
 View the ReadMe site: [ReadMe](https://grant-atl.github.io/Data-Visualization-Booth-2026---Final-Project/)
 

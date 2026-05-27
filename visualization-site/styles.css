@@ -677,11 +677,13 @@ figcaption {
 }
 
 /* ---------- STORY NAV (sticky right-side jump nav) ---------- */
+/* Collapsed to numbered chips by default. Expands to full labels on hover
+   or keyboard focus so the nav doesn't cover graphs while scrolling. */
 
 .story-nav {
   position: fixed;
   top: 50%;
-  right: 1rem;
+  right: 0.6rem;
   transform: translateY(-50%);
   z-index: 60;
   pointer-events: none;
@@ -699,16 +701,15 @@ figcaption {
   pointer-events: auto;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
   min-width: 0;
-  padding: 0.42rem 0.7rem;
-  background: rgba(255, 255, 255, 0.78);
+  padding: 0.42rem 0.55rem;
+  background: rgba(255, 255, 255, 0.82);
   border: 1px solid var(--line);
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 700;
   text-decoration: none;
-  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 
 .story-nav a:hover {
@@ -725,7 +726,8 @@ figcaption {
 
 .story-nav .nav-num {
   display: inline-block;
-  min-width: 1.4em;
+  min-width: 1.6em;
+  text-align: center;
   color: var(--blue);
   font-variant-numeric: tabular-nums;
   font-weight: 800;
@@ -733,6 +735,24 @@ figcaption {
 
 .story-nav a.is-active .nav-num {
   color: var(--navy);
+}
+
+/* Label collapses to width 0; expands when the nav is hovered or focused. */
+.story-nav .nav-label {
+  display: inline-block;
+  max-width: 0;
+  margin-left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 240ms ease, margin-left 240ms ease, opacity 200ms ease;
+}
+
+.story-nav:hover .nav-label,
+.story-nav:focus-within .nav-label {
+  max-width: 14rem;
+  margin-left: 0.55rem;
+  opacity: 1;
 }
 
 /* ---------- ABOUT THIS SAMPLE (compact callout near hero) ---------- */
@@ -799,20 +819,7 @@ figcaption {
   line-height: 1.5;
 }
 
-/* Story-nav responsive: collapse to numbered dots, hide on narrow viewports. */
-
-@media (max-width: 1180px) {
-  .story-nav a {
-    font-size: 0;
-    padding: 0.42rem 0.5rem;
-    gap: 0;
-  }
-
-  .story-nav .nav-num {
-    font-size: 0.78rem;
-    min-width: auto;
-  }
-}
+/* Story-nav responsive: hide entirely on phones. */
 
 @media (max-width: 760px) {
   .story-nav {

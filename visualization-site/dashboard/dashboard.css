@@ -179,8 +179,15 @@
   overflow: visible;
 }
 
+.db-panel-map .panel-figure {
+  display: block;
+}
+
 .db-panel-map .panel-figure svg {
-  min-height: 320px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 600 / 380;
+  min-height: 0;
 }
 
 .panel-footer {

@@ -237,8 +237,15 @@ function renderKpi(rows, districtStats) {
 function renderMap(geo, districtStats) {
   const svg = d3.select("#db-map");
   const node = svg.node();
-  const { width, height } = node.getBoundingClientRect();
-  if (!width || !height) return;
+  if (!node) return;
+
+  // Use a fixed internal coordinate system so the SVG renders reliably
+  // regardless of how the flex parent resolves height.
+  const width = 600;
+  const height = 380;
+  svg
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
 
   svg.selectAll("*").remove();
 
@@ -343,90 +350,78 @@ function renderDomain(rows) {
   });
   const total = rows.length;
 
-  const order = [
+  const categories = [
     { key: "both", label: "Both breast & liver", color: colors.both },
     { key: "liver", label: "Liver only", color: colors.liver },
     { key: "breast", label: "Breast only", color: colors.breast },
     { key: "none", label: "No reported signs", color: colors.none },
   ];
 
-  const svg = d3.select("#db-domain");
-  const { width, height } = svg.node().getBoundingClientRect();
+  const data = categories
+    .map((c) => ({ ...c, count: counts[c.key], share: counts[c.key] / total }))
+    .sort((a, b) => d3.descending(a.count, b.count));
+
+  drawDomainBars("#db-domain", data, total);
+}
+
+function drawDomainBars(selector, data, total) {
+  const svg = d3.select(selector);
+  const node = svg.node();
+  if (!node) return;
+  const { width, height } = node.getBoundingClientRect();
   if (!width || !height) return;
   svg.selectAll("*").remove();
 
-  const m = { top: 18, right: 8, bottom: 12, left: 8 };
-  const innerW = width - m.left - m.right;
-  const barH = 28;
+  const labelWidth = Math.min(150, Math.max(110, width * 0.42));
+  const m = { top: 8, right: 60, bottom: 6, left: labelWidth + 6 };
+  const innerW = Math.max(40, width - m.left - m.right);
+  const innerH = Math.max(40, height - m.top - m.bottom);
+
+  const rowH = innerH / data.length;
+  const barH = Math.min(20, rowH * 0.6);
+
   const g = svg
     .append("g")
     .attr("transform", `translate(${m.left},${m.top})`);
-
   const x = d3.scaleLinear().domain([0, total]).range([0, innerW]);
 
-  let cum = 0;
-  const segments = order.map((seg) => {
-    const v = counts[seg.key];
-    const x0 = x(cum);
-    const x1 = x(cum + v);
-    cum += v;
-    return { ...seg, count: v, x0, x1, share: v / total };
-  });
+  const rowG = g
+    .selectAll("g.row")
+    .data(data)
+    .join("g")
+    .attr("class", "row")
+    .attr("transform", (_, i) => `translate(0,${i * rowH + rowH / 2})`);
 
-  g.selectAll("rect.seg")
-    .data(segments)
-    .join("rect")
-    .attr("class", "seg")
-    .attr("x", (d) => d.x0)
-    .attr("y", 0)
-    .attr("width", (d) => Math.max(0, d.x1 - d.x0))
+  rowG
+    .append("text")
+    .attr("class", "row-label")
+    .attr("x", -8)
+    .attr("y", 4)
+    .attr("text-anchor", "end")
+    .text((d) => d.label);
+
+  rowG
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", -barH / 2)
+    .attr("width", innerW)
+    .attr("height", barH)
+    .attr("fill", "#eef3f8");
+
+  rowG
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", -barH / 2)
+    .attr("width", (d) => Math.max(2, x(d.count)))
     .attr("height", barH)
     .attr("fill", (d) => d.color);
 
-  // In-bar labels for segments wide enough.
-  g.selectAll("text.in-bar")
-    .data(segments.filter((d) => d.x1 - d.x0 > 60))
-    .join("text")
-    .attr("class", "in-bar value-label")
-    .attr("x", (d) => (d.x0 + d.x1) / 2)
-    .attr("y", barH / 2 + 4)
-    .attr("text-anchor", "middle")
-    .attr("fill", colors.surface)
-    .text((d) => `${d.count} · ${fmtPct(d.share)}`);
-
-  // Legend rows beneath the bar.
-  const legendY = barH + 18;
-  const legend = g
-    .append("g")
-    .attr("transform", `translate(0,${legendY})`);
-
-  const rowH = 22;
-  const rows2 = legend
-    .selectAll("g.legend-row")
-    .data(order)
-    .join("g")
-    .attr("class", "legend-row")
-    .attr("transform", (_, i) => `translate(0,${i * rowH})`);
-
-  rows2
-    .append("rect")
-    .attr("width", 11)
-    .attr("height", 11)
-    .attr("y", -10)
-    .attr("fill", (d) => d.color);
-
-  rows2
-    .append("text")
-    .attr("class", "row-label")
-    .attr("x", 18)
-    .text((d) => d.label);
-
-  rows2
+  rowG
     .append("text")
     .attr("class", "value-label")
-    .attr("x", innerW)
-    .attr("text-anchor", "end")
-    .text((d) => `${counts[d.key]} (${fmtPct(counts[d.key] / total)})`);
+    .attr("x", (d) => Math.max(2, x(d.count)) + 6)
+    .attr("y", 4)
+    .text((d) => `${d.count} · ${fmtPct(d.share)}`);
 }
 
 // ---------------------------------------------------------

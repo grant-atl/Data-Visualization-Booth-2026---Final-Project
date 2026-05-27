@@ -180,14 +180,61 @@
 }
 
 .db-panel-map .panel-figure {
+  position: relative;
   display: block;
+  min-height: 318px;
+  overflow: hidden;
+  background: #dfe9f3;
 }
 
-.db-panel-map .panel-figure svg {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 600 / 380;
-  min-height: 0;
+#db-map {
+  position: absolute;
+  inset: 0;
+}
+
+#db-map .maplibregl-ctrl-top-right {
+  top: 0.45rem;
+  right: 0.45rem;
+}
+
+#db-map .maplibregl-ctrl-group {
+  border-radius: 0;
+  box-shadow: 0 8px 24px rgba(10, 47, 92, 0.16);
+}
+
+#db-map .maplibregl-ctrl button {
+  width: 27px;
+  height: 27px;
+}
+
+#db-map .maplibregl-ctrl-attrib {
+  font-size: 10px;
+}
+
+#db-map-tooltip {
+  position: absolute;
+  z-index: 2;
+  display: none;
+  max-width: 230px;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgba(10, 47, 92, 0.18);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 12px 28px rgba(10, 47, 92, 0.18);
+  color: var(--ink);
+  pointer-events: none;
+  font-size: 0.82rem;
+}
+
+#db-map-tooltip strong {
+  display: block;
+  margin-bottom: 0.22rem;
+  font-weight: 800;
+}
+
+#db-map-tooltip span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
 }
 
 .panel-footer {

@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
+  <link href="https://unpkg.com/maplibre-gl@5.9.0/dist/maplibre-gl.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css" />
   <link rel="stylesheet" href="dashboard.css" />
 </head>
@@ -61,10 +62,11 @@
       <header class="panel-header">
         <h2 id="panel-map-title">Any-warning-sign rate by district</h2>
         <p class="panel-sub">Darker shading = higher reporting rate. Districts with fewer than five respondents are
-          hatched.</p>
+          shown with lighter opacity.</p>
       </header>
       <figure class="panel-figure">
-        <svg id="db-map" role="img" aria-label="District choropleth"></svg>
+        <div id="db-map" role="img" aria-label="District choropleth map"></div>
+        <div id="db-map-tooltip" role="status" aria-live="polite"></div>
       </figure>
       <footer class="panel-footer">
         <div class="legend-scale" aria-label="Color scale">
@@ -146,6 +148,7 @@
   </footer>
 
   <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@5.9.0/dist/maplibre-gl.js"></script>
   <script src="dashboard.js"></script>
 </body>
 

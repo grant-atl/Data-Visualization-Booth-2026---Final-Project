@@ -1,5 +1,6 @@
 const DATA_URL = "../data/survey-fixed.csv";
 const GEO_URL = "../data/hcmc-districts.geojson";
+const OFM_STYLE = "https://tiles.openfreemap.org/styles/liberty";
 
 const fmtInt = d3.format(",");
 const fmtPct = d3.format(".0%");
@@ -29,6 +30,9 @@ const colors = {
 const mapPalette = ["#eef3f8", "#91a7bd", "#344b67"];
 
 const ageBrackets = ["18-29", "30-39", "40-49", "50-59", "60+"];
+let dbMap = null;
+let dbMapReady = false;
+let dbMapHoveredId = null;
 
 // ---------------------------------------------------------
 // Data normalization (mirrors app.js so column shapes match)
@@ -195,7 +199,7 @@ function buildDistrictStats(rows, geo) {
       anyRate: 0,
       lowSample: true,
     };
-    f.properties.__stat = stat;
+    Object.assign(f.properties, stat);
   });
   return Array.from(stats.values()).sort((a, b) => d3.descending(a.n, b.n));
 }
@@ -231,52 +235,10 @@ function renderKpi(rows, districtStats) {
 }
 
 // ---------------------------------------------------------
-// Map — D3 GeoJSON choropleth (no MapLibre; static dashboard).
+// Map — MapLibre choropleth using the same basemap as the story page.
 // ---------------------------------------------------------
 
 function renderMap(geo, districtStats) {
-  const svg = d3.select("#db-map");
-  const node = svg.node();
-  if (!node) return;
-
-  // Use a fixed internal coordinate system so the SVG renders reliably
-  // regardless of how the flex parent resolves height.
-  const width = 600;
-  const height = 380;
-  svg
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet");
-
-  svg.selectAll("*").remove();
-
-  // <defs> with a small diagonal hatch for low-sample fills.
-  const defs = svg.append("defs");
-  const hatch = defs
-    .append("pattern")
-    .attr("id", "db-hatch")
-    .attr("patternUnits", "userSpaceOnUse")
-    .attr("width", 5)
-    .attr("height", 5)
-    .attr("patternTransform", "rotate(45)");
-  hatch
-    .append("rect")
-    .attr("width", 5)
-    .attr("height", 5)
-    .attr("fill", colors.noData);
-  hatch
-    .append("line")
-    .attr("x1", 0)
-    .attr("y1", 0)
-    .attr("x2", 0)
-    .attr("y2", 5)
-    .attr("stroke", "#c6cfdb")
-    .attr("stroke-width", 1.2);
-
-  // Reserve a strip on the right for district labels of top districts.
-  const projection = d3.geoMercator().fitSize([width, height], geo);
-  const path = d3.geoPath().projection(projection);
-
-  // Sequential color scale on any-symptom rate.
   const ratesWithSample = districtStats
     .filter((s) => s.n >= 5)
     .map((s) => s.anyRate);
@@ -288,43 +250,33 @@ function renderMap(geo, districtStats) {
     .range(mapPalette)
     .clamp(true);
 
-  svg
-    .append("g")
-    .selectAll("path")
-    .data(geo.features)
-    .join("path")
-    .attr("d", path)
-    .attr("fill", (d) => {
-      const s = d.properties.__stat;
-      if (!s || s.n === 0) return colors.noData;
-      if (s.lowSample) return "url(#db-hatch)";
-      return color(s.anyRate);
-    })
-    .attr("stroke", "#9bacc2")
-    .attr("stroke-width", 0.6)
-    .attr("vector-effect", "non-scaling-stroke")
-    .style("cursor", "pointer")
-    .on("mousemove", (event, d) => {
-      const s = d.properties.__stat;
-      if (!s || s.n === 0) {
-        showTooltip(
-          event,
-          `<strong>${displayDistrictName(d.properties.shape2)}</strong>
-           <span>No survey respondents</span>`
-        );
-        return;
-      }
-      const rateText = s.lowSample
-        ? `${fmtPct1(s.anyRate)} — small sample`
-        : fmtPct1(s.anyRate);
-      showTooltip(
-        event,
-        `<strong>${s.name}</strong>
-         <span>n = ${fmtInt(s.n)} respondents</span>
-         <span>Any warning sign: ${rateText}</span>`
-      );
-    })
-    .on("mouseleave", hideTooltip);
+  geo.features.forEach((feature) => {
+    feature.properties.mapColor =
+      feature.properties.n > 0 ? color(feature.properties.anyRate) : colors.noData;
+  });
+
+  if (!dbMap) {
+    dbMap = new maplibregl.Map({
+      container: "db-map",
+      style: OFM_STYLE,
+      center: [106.704, 10.8],
+      zoom: 9.55,
+      pitch: 0,
+      bearing: 0,
+      attributionControl: true,
+    });
+    dbMap.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    dbMap.on("load", () => {
+      dbMapReady = true;
+      buildMapLayers(geo);
+      fitMapToGeo(geo);
+      bindDashboardMapHover();
+    });
+  } else if (dbMapReady) {
+    dbMap.getSource("db-districts")?.setData(geo);
+    dbMap.resize();
+    fitMapToGeo(geo);
+  }
 
   // Update the scale strip beneath the map to reflect the actual domain.
   const scaleEl = d3.select("#db-map-scale").node();
@@ -337,6 +289,109 @@ function renderMap(geo, districtStats) {
   d3.select(".legend-scale .legend-scale-label:last-of-type").text(
     fmtPct(maxRate)
   );
+}
+
+function buildMapLayers(geo) {
+  dbMap.addSource("db-districts", {
+    type: "geojson",
+    data: geo,
+    promoteId: "key",
+  });
+
+  dbMap.addLayer({
+    id: "db-district-fill",
+    type: "fill",
+    source: "db-districts",
+    paint: {
+      "fill-color": ["get", "mapColor"],
+      "fill-opacity": [
+        "case",
+        ["==", ["get", "n"], 0],
+        0.22,
+        ["boolean", ["get", "lowSample"], false],
+        0.48,
+        0.78,
+      ],
+    },
+  });
+
+  dbMap.addLayer({
+    id: "db-district-outline",
+    type: "line",
+    source: "db-districts",
+    paint: {
+      "line-color": "#25323c",
+      "line-opacity": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        0.72,
+        0.34,
+      ],
+      "line-width": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        2.1,
+        0.8,
+      ],
+    },
+  });
+}
+
+function bindDashboardMapHover() {
+  const tooltipEl = d3.select("#db-map-tooltip");
+
+  dbMap.on("mousemove", "db-district-fill", (event) => {
+    const feature = event.features?.[0];
+    if (!feature) return;
+
+    if (dbMapHoveredId !== null) {
+      dbMap.setFeatureState({ source: "db-districts", id: dbMapHoveredId }, { hover: false });
+    }
+    dbMapHoveredId = feature.id;
+    dbMap.setFeatureState({ source: "db-districts", id: dbMapHoveredId }, { hover: true });
+
+    const p = feature.properties;
+    const rateText = p.lowSample
+      ? `${fmtPct1(+p.anyRate || 0)} — small sample`
+      : fmtPct1(+p.anyRate || 0);
+    const details = +p.n
+      ? `<span>n = ${fmtInt(+p.n)} respondents</span><span>Any warning sign: ${rateText}</span>`
+      : "<span>No survey respondents</span>";
+
+    tooltipEl
+      .style("display", "block")
+      .style("left", `${event.point.x + 12}px`)
+      .style("top", `${event.point.y + 12}px`)
+      .html(`<strong>${p.name || displayDistrictName(p.shape2)}</strong>${details}`);
+  });
+
+  dbMap.on("mouseleave", "db-district-fill", () => {
+    if (dbMapHoveredId !== null) {
+      dbMap.setFeatureState({ source: "db-districts", id: dbMapHoveredId }, { hover: false });
+    }
+    dbMapHoveredId = null;
+    tooltipEl.style("display", "none");
+  });
+}
+
+function fitMapToGeo(geo) {
+  const bounds = new maplibregl.LngLatBounds();
+  geo.features.forEach((feature) => extendBounds(bounds, feature.geometry.coordinates));
+  if (!bounds.isEmpty()) {
+    dbMap.fitBounds(bounds, {
+      padding: { top: 28, right: 26, bottom: 24, left: 26 },
+      duration: 0,
+    });
+  }
+}
+
+function extendBounds(bounds, coordinates) {
+  if (!Array.isArray(coordinates)) return;
+  if (typeof coordinates[0] === "number" && typeof coordinates[1] === "number") {
+    bounds.extend(coordinates);
+    return;
+  }
+  coordinates.forEach((child) => extendBounds(bounds, child));
 }
 
 // ---------------------------------------------------------

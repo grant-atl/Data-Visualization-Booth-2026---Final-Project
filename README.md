@@ -325,3 +325,49 @@ Design choices include:
 - parameter-driven interactivity for symptom and lifestyle exploration;
 - consistent color use for symptom-rate views;
 - direct labels on bars and maps where possible;
+
+## Audience and research questions
+
+The primary audience for this project is my undergraduate university research team showing the results of our Ho Chi Minh City cancer-symptom survey. The goal is to present the findings from the research we conducted in a clear, professional, and self-contained format so viewers can understand the main patterns in reported breast and liver cancer warning signs across the survey sample.
+
+This project answers three main research questions:
+
+1. How common is self-reported breast or liver cancer warning-sign reporting among respondents in Ho Chi Minh City?
+2. How do reported warning signs vary by district, age group, and symptom type?
+3. How do selected lifestyle, social-support, and health-context measures compare across respondents with and without reported warning signs?
+
+The analysis is descriptive rather than diagnostic or causal. The goal is to communicate patterns from the research sample, not to estimate cancer prevalence in Ho Chi Minh City or prove that any lifestyle factor causes symptom reporting.
+
+## LLM usage
+I used Codex during data preparation to help translate and clarify Vietnamese survey labels into English and rename fields into readable analysis-ready column names. 
+
+## Data validation and cleaning checks
+
+Before building the Tableau workbook and web visualization, I checked that the cleaned dataset was analysis-ready.
+
+Validation checks included:
+
+- Confirmed the cleaned web-ready dataset contains 170 survey responses.
+- Confirmed there are 170 unique respondent IDs, with no blank respondent IDs.
+- Confirmed the dataset includes more than 5 columns, with 92 columns in the web-ready CSV.
+- Confirmed 19 Ho Chi Minh City districts are represented in the survey sample.
+- Confirmed the main headline count: 127 respondents reported at least one breast or liver cancer warning sign, and 43 respondents reported no warning signs.
+- Confirmed the symptom-domain counts used in the visualization: 100 respondents reported both breast and liver warning signs, 25 reported liver signs only, 2 reported breast signs only, and 43 reported no warning signs.
+- Preserved original Qualtrics GeoIP coordinates in separate fields, then replaced the main mapping coordinates with district-level representative coordinates because the original GeoIP locations were not reliable for district-level analysis.
+- Added response-quality fields to flag possible sleep-entry issues, anthropometric data issues, and responses needing review.
+- Checked that the district boundary GeoJSON loaded correctly for the map-based views.
+
+
+## Visualization site tech stack
+
+In addition to the Tableau workbook, I built a supplemental web visualization site to present the findings in an interactive, scroll-based format.
+
+The site uses:
+
+- HTML, CSS, and JS for the page structure, styling, and interaction.
+- D3.js for the custom charts, including the dot grid, chord diagram, correlation matrix, and Sankey-style age flow.
+- MapLibre GL JS for the interactive Ho Chi Minh City district map.
+- OpenFreeMap for the basemap tiles.
+- A GeoJSON district boundary file for the map: `visualization-site/data/hcmc-districts.geojson`.
+
+The web visualization is supplemental to the Tableau workbook.

@@ -4,6 +4,7 @@
   color: var(--ink);
   font-family: "Plus Jakarta Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ---------- HEADER ---------- */
@@ -13,7 +14,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 2rem;
-  padding: 1.4rem 2rem 1.1rem;
+  padding: 1.45rem 2rem 1.15rem;
   background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
@@ -21,6 +22,10 @@
 .db-header-left,
 .db-header-right {
   min-width: 0;
+}
+
+.db-header-left {
+  max-width: 820px;
 }
 
 .db-eyebrow {
@@ -34,9 +39,11 @@
 .db-title {
   margin: 0.2rem 0 0;
   color: var(--ink);
-  font-size: 1.65rem;
+  font-size: clamp(1.5rem, 2.6vw, 2.35rem);
   font-weight: 800;
   line-height: 1.1;
+  overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 .db-header-right {
@@ -73,19 +80,40 @@
   padding: 14px 18px 4px;
 }
 
+.db-grid > * {
+  min-width: 0;
+}
+
 /* Row 1 — 4 KPI tiles span the full 12 columns */
 .db-kpi {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: 1.35fr repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
 .kpi-tile {
-  padding: 0.95rem 1.05rem 1rem;
+  min-width: 0;
+  min-height: 122px;
+  padding: 1rem 1.05rem 1.05rem;
   background: var(--surface);
   border: 1px solid var(--line);
   border-left: 3px solid var(--navy);
+}
+
+.kpi-primary {
+  background: var(--navy);
+  border-color: var(--navy);
+  border-left-color: var(--blue);
+}
+
+.kpi-primary .kpi-label,
+.kpi-primary .kpi-foot {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.kpi-primary .kpi-value {
+  color: #ffffff;
 }
 
 .kpi-label {
@@ -112,9 +140,42 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Row 2 — map (6), symptom domain (3), age (3) */
+/* ---------- TAKEAWAY ---------- */
+
+.db-insight {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(120px, 0.18fr) 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.05rem;
+  background: #f8fbfd;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
+}
+
+.insight-label {
+  margin: 0;
+  color: var(--blue);
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.insight-copy {
+  margin: 0;
+  min-width: 0;
+  max-width: 1020px;
+  color: #40556f;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+}
+
+/* Geography block — map plus rankings */
 .db-panel-map {
-  grid-column: span 6;
+  grid-column: span 7;
+  grid-row: span 2;
 }
 
 .db-panel-domain {
@@ -125,8 +186,11 @@
   grid-column: span 3;
 }
 
-/* Row 3 — four equal 3-col panels */
-.db-panel-rank,
+.db-panel-rank {
+  grid-column: span 5;
+  min-height: 218px;
+}
+
 .db-panel-sex,
 .db-panel-history {
   grid-column: span 3;
@@ -137,8 +201,9 @@
 .db-panel {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   min-height: 240px;
-  padding: 0.95rem 1.05rem 0.9rem;
+  padding: 0.95rem 1.05rem 0.95rem;
   background: var(--surface);
   border: 1px solid var(--line);
 }
@@ -161,6 +226,7 @@
   color: var(--muted);
   font-size: 0.8rem;
   line-height: 1.35;
+  overflow-wrap: break-word;
 }
 
 .panel-figure {
@@ -175,14 +241,14 @@
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 180px;
+  min-height: 176px;
   overflow: visible;
 }
 
 .db-panel-map .panel-figure {
   position: relative;
   display: block;
-  min-height: 318px;
+  min-height: 442px;
   overflow: hidden;
   background: #dfe9f3;
 }
@@ -190,6 +256,19 @@
 #db-map {
   position: absolute;
   inset: 0;
+}
+
+.db-map-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: break-word;
 }
 
 #db-map .maplibregl-ctrl-top-right {
@@ -345,6 +424,11 @@
 @media (max-width: 1200px) {
   .db-panel-map {
     grid-column: span 12;
+    grid-row: auto;
+  }
+
+  .db-panel-rank {
+    grid-column: span 6;
   }
 
   .db-panel-domain,
@@ -352,7 +436,6 @@
     grid-column: span 6;
   }
 
-  .db-panel-rank,
   .db-panel-sex,
   .db-panel-history {
     grid-column: span 6;
@@ -363,19 +446,42 @@
   .db-header {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1.15rem 1rem 1rem;
+  }
+
+  .db-title {
+    font-size: 1.5rem;
+  }
+
+  .db-header-left,
+  .db-header-right {
+    width: 100%;
   }
 
   .db-header-right {
     text-align: left;
   }
 
-  .db-kpi {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .db-grid {
+    padding: 14px 12px 4px;
   }
 
+  .db-kpi {
+    grid-template-columns: 1fr;
+  }
+
+  .db-insight {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .db-panel-map .panel-figure {
+    min-height: 360px;
+  }
+
+  .db-panel-rank,
   .db-panel-domain,
   .db-panel-age,
-  .db-panel-rank,
   .db-panel-sex,
   .db-panel-history {
     grid-column: span 12;

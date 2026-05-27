@@ -21,7 +21,7 @@
   <header class="db-header">
     <div class="db-header-left">
       <p class="db-eyebrow">Ho Chi Minh City cancer-awareness survey</p>
-      <h1 class="db-title">Summary dashboard</h1>
+      <h1 class="db-title">Warning-sign reporting is common, but uneven across districts</h1>
     </div>
     <div class="db-header-right">
       <p class="db-context">
@@ -33,14 +33,9 @@
 
   <main class="db-grid">
 
-    <!-- ROW 1: 4 KPI tiles -->
+    <!-- ROW 1: 4 KPI tiles ordered as a sentence -->
     <section class="db-kpi" aria-label="Headline statistics">
-      <div class="kpi-tile">
-        <p class="kpi-label">Survey responses</p>
-        <p class="kpi-value" id="kpi-n">170</p>
-        <p class="kpi-foot">Cleaned rows</p>
-      </div>
-      <div class="kpi-tile">
+      <div class="kpi-tile kpi-primary">
         <p class="kpi-label">Reported any warning sign</p>
         <p class="kpi-value" id="kpi-any">75%</p>
         <p class="kpi-foot"><span id="kpi-any-n">127</span> of 170 respondents</p>
@@ -55,13 +50,27 @@
         <p class="kpi-value" id="kpi-districts">19</p>
         <p class="kpi-foot">of Ho Chi Minh City</p>
       </div>
+      <div class="kpi-tile">
+        <p class="kpi-label">Survey responses</p>
+        <p class="kpi-value" id="kpi-n">170</p>
+        <p class="kpi-foot">Cleaned rows</p>
+      </div>
     </section>
 
-    <!-- ROW 2: map, symptom domain, age -->
+    <section class="db-insight" aria-label="Dashboard takeaway">
+      <p class="insight-label">Key takeaway</p>
+      <p class="insight-copy">
+        In this sample, warning-sign reporting is high: 75% of respondents reported at least one sign, and several
+        districts show notably higher reporting rates. District comparisons should be read as descriptive because sample
+        sizes vary.
+      </p>
+    </section>
+
+    <!-- Geography evidence: map and district rankings should be read together -->
     <section class="db-panel db-panel-map" aria-labelledby="panel-map-title">
       <header class="panel-header">
-        <h2 id="panel-map-title">Any-warning-sign rate by district</h2>
-        <p class="panel-sub">Darker shading = higher reporting rate. Districts with fewer than five respondents are
+        <h2 id="panel-map-title">Reporting varies by district</h2>
+        <p class="panel-sub">Darker shading = higher any-warning-sign rate. Districts with fewer than five respondents are
           shown with lighter opacity.</p>
       </header>
       <figure class="panel-figure">
@@ -77,9 +86,30 @@
       </footer>
     </section>
 
+    <section class="db-panel db-panel-rank" aria-labelledby="panel-top-title">
+      <header class="panel-header">
+        <h2 id="panel-top-title">Highest reporting districts</h2>
+        <p class="panel-sub">Top 5 any-sign rates · n &ge; 5 respondents</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-top" role="img" aria-label="Top 5 districts ranked"></svg>
+      </figure>
+    </section>
+
+    <section class="db-panel db-panel-rank" aria-labelledby="panel-bottom-title">
+      <header class="panel-header">
+        <h2 id="panel-bottom-title">Lowest reporting districts</h2>
+        <p class="panel-sub">Bottom 5 any-sign rates · n &ge; 5 respondents</p>
+      </header>
+      <figure class="panel-figure">
+        <svg id="db-bottom" role="img" aria-label="Bottom 5 districts ranked"></svg>
+      </figure>
+    </section>
+
+    <!-- Supporting evidence -->
     <section class="db-panel db-panel-domain" aria-labelledby="panel-domain-title">
       <header class="panel-header">
-        <h2 id="panel-domain-title">Symptom-domain profile</h2>
+        <h2 id="panel-domain-title">Most symptom reporters reported both categories</h2>
         <p class="panel-sub">Each respondent falls into exactly one pattern.</p>
       </header>
       <figure class="panel-figure">
@@ -90,31 +120,10 @@
     <section class="db-panel db-panel-age" aria-labelledby="panel-age-title">
       <header class="panel-header">
         <h2 id="panel-age-title">Reporting rate by age bracket</h2>
-        <p class="panel-sub">Bar length = % reporting any sign. Tick marks above each bar show respondent count.</p>
+        <p class="panel-sub">Bar length = % reporting any sign; respondent count is shown beside each group.</p>
       </header>
       <figure class="panel-figure">
         <svg id="db-age" role="img" aria-label="Bar chart of any-symptom rate by age"></svg>
-      </figure>
-    </section>
-
-    <!-- ROW 3: top 5, bottom 5, sex, health-history -->
-    <section class="db-panel db-panel-rank" aria-labelledby="panel-top-title">
-      <header class="panel-header">
-        <h2 id="panel-top-title">Top 5 districts</h2>
-        <p class="panel-sub">Highest any-sign rate · n &ge; 5 respondents</p>
-      </header>
-      <figure class="panel-figure">
-        <svg id="db-top" role="img" aria-label="Top 5 districts ranked"></svg>
-      </figure>
-    </section>
-
-    <section class="db-panel db-panel-rank" aria-labelledby="panel-bottom-title">
-      <header class="panel-header">
-        <h2 id="panel-bottom-title">Bottom 5 districts</h2>
-        <p class="panel-sub">Lowest any-sign rate · n &ge; 5 respondents</p>
-      </header>
-      <figure class="panel-figure">
-        <svg id="db-bottom" role="img" aria-label="Bottom 5 districts ranked"></svg>
       </figure>
     </section>
 

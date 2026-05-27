@@ -256,15 +256,21 @@ function renderMap(geo, districtStats) {
   });
 
   if (!dbMap) {
-    dbMap = new maplibregl.Map({
-      container: "db-map",
-      style: OFM_STYLE,
-      center: [106.704, 10.8],
-      zoom: 9.55,
-      pitch: 0,
-      bearing: 0,
-      attributionControl: true,
-    });
+    try {
+      dbMap = new maplibregl.Map({
+        container: "db-map",
+        style: OFM_STYLE,
+        center: [106.704, 10.8],
+        zoom: 9.55,
+        pitch: 0,
+        bearing: 0,
+        attributionControl: true,
+      });
+    } catch (err) {
+      showMapFallback();
+      console.warn("Dashboard map could not initialize:", err);
+      return;
+    }
     dbMap.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     dbMap.on("load", () => {
       dbMapReady = true;
@@ -289,6 +295,14 @@ function renderMap(geo, districtStats) {
   d3.select(".legend-scale .legend-scale-label:last-of-type").text(
     fmtPct(maxRate)
   );
+}
+
+function showMapFallback() {
+  d3.select("#db-map")
+    .html("")
+    .append("div")
+    .attr("class", "db-map-fallback")
+    .text("Map preview is unavailable in this browser. District rankings remain available below.");
 }
 
 function buildMapLayers(geo) {
